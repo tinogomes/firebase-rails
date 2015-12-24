@@ -1,3 +1,5 @@
+require 'firebase'
+
 class FirebaseBase
 
   def is_firebase_class() end

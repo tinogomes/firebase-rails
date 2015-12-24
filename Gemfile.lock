@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     firebase_rails (0.0.1)
+      firebase
       rails (~> 4.2.0)
 
 GEM
@@ -110,6 +111,5 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  firebase
   firebase_rails!
   sqlite3
