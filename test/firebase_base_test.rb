@@ -37,6 +37,16 @@ class FirebaseBaseTest < ActiveSupport::TestCase
     assert_equal stock_2.id, found_stocks.first.id
   end
 
+  def test_find_by_boolean_param
+    stock_1 = FirebaseTransaction.create({open: false})
+    stock_2 = FirebaseTransaction.create({open: false})
+    stock_3 = FirebaseTransaction.create({open: true})
+    stock_4 = FirebaseTransaction.create({open: false})
+    found_stocks = FirebaseTransaction.find_by({open: true})
+    assert_equal 1, found_stocks.count
+    assert_equal stock_3.id, found_stocks.first.id
+  end
+
   def test_find_by_multiple_params
     stock_1 = FirebaseStock.create({symbol: "AAA", price: 3.44})
     stock_2 = FirebaseStock.create({symbol: "BBB", price: 1.22})

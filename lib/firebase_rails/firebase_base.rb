@@ -57,6 +57,16 @@ class FirebaseBase
       firebase_hashes_array.map{ |hash| create_firebase_object(hash) }
     end
 
+    # firebase requires this type of encoding or it doesn't work
+    # wack if you ask me, but it's in their docs somewhere
+    def encode_init_value(value)
+      if value.kind_of?(String)
+        "\"#{value}\""
+      elsif [true, false].include?(value)
+        "#{value}"
+      end
+    end
+
     # takes a hash of key and values
     # and returns an array of objects
     def find_by(hash)
@@ -66,7 +76,7 @@ class FirebaseBase
       init_key, init_value = hash.shift
       firebase_response = firebase_request(:get, firebase_model,
         :orderBy => "\"#{init_key}\"",
-        :equalTo => "\"#{init_value.to_s}\""
+        :equalTo => encode_init_value(init_value)
       )
 
       # we then filter the remaining key/values with ruby
