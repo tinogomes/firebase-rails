@@ -6,6 +6,10 @@ class FirebaseBaseTest < ActiveSupport::TestCase
     FirebaseTransaction.destroy_all
   end
 
+  def test_config_file
+    assert_equal "rails-tests", Rails.configuration.x.firebase_name
+  end
+
   def test_to_create_a_stock_object
     stock = FirebaseStock.create({symbol: "APPL"})
     assert_equal "APPL", stock.symbol

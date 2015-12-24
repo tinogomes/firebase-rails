@@ -1,0 +1,4 @@
+production:
+  firebase_name: "rails-tests"
+development:
+  firebase_name: "rails-tests"

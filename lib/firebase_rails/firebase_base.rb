@@ -143,7 +143,13 @@ class FirebaseBase
     end
 
     def firebase_client
-      @firebase_client ||= Firebase::Client.new("https://rails-tests.firebaseio.com/")
+      @firebase_client ||= Firebase::Client.new("https://#{firebase_database_name}.firebaseio.com/")
+    end
+
+    def firebase_database_name
+      name = Rails.configuration.x.firebase_name
+      throw "No firebase_name was found in the configurations" if name.empty?
+      name
     end
 
     def firebase_model
