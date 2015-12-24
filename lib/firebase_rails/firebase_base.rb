@@ -93,14 +93,14 @@ class FirebaseBase
     # DYNAMIC METHODS FOR ASSOCIATIONS
 
     def associations_hash
-      @@associations_hash ||= {
+      @associations_hash ||= {
         has_many: [],
         belongs_to: []
       }
     end
 
     def associations_array
-      @@associations_array ||= associations_hash[:has_many].dup.concat(associations_hash[:belongs_to].dup)
+      @associations_array ||= associations_hash[:has_many].dup.concat(associations_hash[:belongs_to].dup)
     end
 
     def has_many(attr)
