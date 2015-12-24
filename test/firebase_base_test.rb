@@ -71,6 +71,11 @@ class FirebaseBaseTest < ActiveSupport::TestCase
     assert_equal 6.01, found_stock.price
   end
 
+  def test_retrieving_has_many_associations_when_they_dont_exist
+    stock = FirebaseStock.create({symbol: "AAA", price: 3.44})
+    assert_equal 0, stock.transactions.count
+  end
+
   def test_has_many_associations
     stock = FirebaseStock.create({symbol: "AAA", price: 3.44})
     transactions = [1,2,3].map do |price|
@@ -98,14 +103,20 @@ class FirebaseBaseTest < ActiveSupport::TestCase
   def test_belongs_to_association
     stock = FirebaseStock.create({symbol: "AAA"})
     transaction = FirebaseTransaction.create({price: 1.22})
-    transaction.stock = stock
+    transaction.set_stock(stock)
     assert_equal stock.id, transaction.stock
   end
 
   def test_belongs_to_association_with_string
     stock = FirebaseStock.create({symbol: "AAA"})
     transaction = FirebaseTransaction.create({price: 1.22})
-    transaction.stock = stock.id
+    transaction.set_stock(stock.id)
+    assert_equal stock.id, transaction.stock
+  end
+
+  def test_belongs_to_association_hard_coded
+    stock = FirebaseStock.create({symbol: "AAA"})
+    transaction = FirebaseTransaction.create({price: 1.22, stock: stock.id})
     assert_equal stock.id, transaction.stock
   end
 end

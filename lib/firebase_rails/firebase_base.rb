@@ -92,12 +92,19 @@ class FirebaseBase
 
     # DYNAMIC METHODS FOR ASSOCIATIONS
 
+    def associations_hash
+      @@associations_hash ||= {
+        has_many: [],
+        belongs_to: []
+      }
+    end
+
     def associations_array
-      @@associations_array ||= []
+      @@associations_array ||= associations_hash[:has_many].dup.concat(associations_hash[:belongs_to].dup)
     end
 
     def has_many(attr)
-      associations_array << attr.to_s
+      associations_hash[:has_many] << attr.to_s
 
       define_method "set_#{attr}" do |args|
         args = [args] unless args.kind_of?(Array)
@@ -115,17 +122,14 @@ class FirebaseBase
     end
 
     def belongs_to(attr)
-      associations_array << attr.to_s
+      associations_hash[:belongs_to] << attr.to_s
 
-      define_method "#{attr}=" do |args|
+      define_method "set_#{attr}" do |args|
         if args.class.method_defined? :is_firebase_class
           self.class.set_attr_accessor(self, attr, args.id)
         else
           self.class.set_attr_accessor(self, attr, args)
         end
-      end
-      define_method "#{attr}" do
-        self.send("#{attr}")
       end
     end
 
@@ -188,17 +192,34 @@ class FirebaseBase
       end
     end
 
-    def attr_accessors_hash
-      {
+    def attr_accessors_hash(hash)
+      new_hash = {
         firebase_model: firebase_model
       }
+      # these are the keys that have values from the firebase object
+      included_keys = hash.keys.map{ |key| key.to_s }
+
+      # goes through the associations and sets attr_accessors for those
+      # associations that werent included from the firebase object
+      associations_hash[:belongs_to].each do |association|
+        new_hash[association] = nil unless included_keys.include?(association)
+      end
+      associations_hash[:has_many].each do |association|
+        new_hash[association] = [] unless included_keys.include?(association)
+      end
+
+      new_hash
     end
 
     def create_firebase_object(hash)
       firebase_object = self.new
-      hash.merge(attr_accessors_hash).each do |k, v|
-        set_attr_accessor(firebase_object, k, v) unless associations_array.include?(k)
+
+      # takes all attributes from firebase and possible attributes from
+      # associations and creates and sets attr_accessors for them
+      hash.merge(attr_accessors_hash(hash)).each do |k, v|
+        set_attr_accessor(firebase_object, k, v)
       end
+
       firebase_object
     end
   end
