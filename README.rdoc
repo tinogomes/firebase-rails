@@ -1,3 +1,40 @@
 = FirebaseRails
 
-This project rocks and uses MIT-LICENSE.
+### Installation
+
+Add to your Gemfile:
+
+    gem 'firebase_rails'
+
+or install from Rubygems:
+
+    gem install firebase_rails
+
+=== Setup
+
+Add firebase_rails_config.yml file to config
+
+    # config/firebase_rails_config.yml
+
+    production:
+      firebase_name: "rails-tests"
+    development:
+      firebase_name: "rails-tests"
+
+Include this config in environment configs (production, development, test)
+
+    # config/environments/development
+
+    Rails.application.configure do
+      config.x.firebase_name = "rails-tests"
+    end
+
+=== Usage
+
+Inherit FirebaseBase and list associations and attr_accessors
+
+    class FirebaseStock < FirebaseBase
+      has_many :transactions
+      attr_accessor :symbol, :price
+    end
+
