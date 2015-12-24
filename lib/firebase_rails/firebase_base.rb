@@ -215,13 +215,23 @@ class FirebaseBase
       new_hash
     end
 
+    def formatted_value(k, v)
+      # firebase returns array of ids like this: {"-K8juhaua" => true, "-heddH9h" => true}
+      # we need to format it as an array of ids
+      if associations_hash[:has_many].include?(k.to_s) && v.kind_of?(Hash)
+        v.keys
+      else
+        v
+      end
+    end
+
     def create_firebase_object(hash)
       firebase_object = self.new
 
       # takes all attributes from firebase and possible attributes from
       # associations and creates and sets attr_accessors for them
       hash.merge(attr_accessors_hash(hash)).each do |k, v|
-        set_attr_accessor(firebase_object, k, v)
+        set_attr_accessor(firebase_object, k, formatted_value(k, v))
       end
 
       firebase_object
