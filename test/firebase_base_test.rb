@@ -80,6 +80,15 @@ class FirebaseBaseTest < ActiveSupport::TestCase
     assert_equal 3, stock.transactions.count
   end
 
+  def test_has_many_associations_with_just_ids
+    stock = FirebaseStock.create({symbol: "AAA", price: 3.44})
+    transactions = [1,2,3].map do |price|
+      FirebaseTransaction.create({price: price, stock: stock.id})
+    end
+    stock.set_transactions(transactions.map{ |transaction| transaction.id })
+    assert_equal 3, stock.transactions.count
+  end
+
   def test_belongs_to_association_hard_coded
     stock = FirebaseStock.create({symbol: "AAA"})
     transactions = FirebaseTransaction.create({price: 1.22, stock: stock.id})

@@ -102,8 +102,9 @@ class FirebaseBase
       define_method "set_#{attr}" do |args|
         args = [args] unless args.kind_of?(Array)
         firebase_object_ids_hash = {}
-        args.each do |firebase_object|
-          firebase_object_ids_hash[firebase_object.id] = true
+        args.each do |object_or_id|
+          id = object_or_id.kind_of?(String) ? object_or_id : object_or_id.id
+          firebase_object_ids_hash[id] = true
         end
         self.class.set_attr_accessor(self, attr, firebase_object_ids_hash.keys)
         FirebaseBase.firebase_request(:set,
