@@ -119,4 +119,14 @@ class FirebaseBaseTest < ActiveSupport::TestCase
     transaction = FirebaseTransaction.create({price: 1.22, stock: stock.id})
     assert_equal stock.id, transaction.stock
   end
+
+  def test_pushing_an_object_into_a_has_many_association_with_existing_objects
+    transaction = FirebaseTransaction.create({price: 1.22})
+    stock = FirebaseStock.create({symbol: "AAA"})
+    stock.set_transactions(transaction)
+    transaction_2 = FirebaseTransaction.create({price: 1.32, stock: stock.id})
+    stock.push_transaction(transaction_2)
+    assert_equal stock.transactions.count, 2
+    assert_equal stock.transactions.last, transaction_2.id
+  end
 end

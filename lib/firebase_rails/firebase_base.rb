@@ -119,6 +119,10 @@ class FirebaseBase
           firebase_object_ids_hash.as_json
         )
       end
+
+      define_method "push_#{attr.to_s.singularize}" do |args|
+        self.send("set_#{attr}", self.transactions.push(args.id))
+      end
     end
 
     def belongs_to(attr)
