@@ -168,8 +168,8 @@ class FirebaseBase
     end
 
     def firebase_database_name
-      name = Rails.configuration.x.firebase_name
-      throw "No firebase_name was found in the configurations" if name.empty?
+      name = ENV['FIREBASE_NAME']
+      throw "No firebase_name was found in the environment vars" if name.empty?
       name
     end
 

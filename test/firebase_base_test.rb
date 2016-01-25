@@ -7,7 +7,7 @@ class FirebaseBaseTest < ActiveSupport::TestCase
   end
 
   def test_config_file
-    assert_equal "rails-tests", Rails.configuration.x.firebase_name
+    assert_equal "rails-tests", ENV['FIREBASE_NAME']
   end
 
   def test_to_create_a_stock_object

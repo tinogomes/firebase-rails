@@ -12,22 +12,7 @@ or install from Rubygems:
 
 === Setup
 
-Add firebase_rails_config.yml file to config
-
-    # config/firebase_rails_config.yml
-
-    production:
-      firebase_name: "rails-tests"
-    development:
-      firebase_name: "rails-tests"
-
-Include this config in environment configs (production, development, test)
-
-    # config/environments/development
-
-    Rails.application.configure do
-      config.x.firebase_name = "rails-tests"
-    end
+Add an environment variable called FIREBASE_NAME with the name of your firebase database
 
 === Usage
 
