@@ -53,6 +53,7 @@ class FirebaseBase
 
     def all
       firebase_response = firebase_request(:get, "#{firebase_model}")
+      return [] unless firebase_response
       firebase_hashes_array = normalize_firebase_hashes(firebase_response)
       firebase_hashes_array.map{ |hash| create_firebase_object(hash) }
     end
@@ -148,6 +149,11 @@ class FirebaseBase
       # firebase returns nil after successfully deleting records
       if verb == :delete && !response
         return true
+      end
+
+      # when trying to find all of a model and nothing exists
+      if verb == :get && !params && !response
+        return response
       end
 
       # if nil is returned firebase could not find the specified id
