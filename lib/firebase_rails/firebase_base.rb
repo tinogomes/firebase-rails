@@ -91,6 +91,15 @@ class FirebaseBase
       firebase_hashes_array.map{ |hash| create_firebase_object(hash) }
     end
 
+    def find_or_create_by(hash)
+      firebase_object = self.find_by(hash.dup)
+      if firebase_object.any?
+        firebase_object.first
+      else
+        self.create(hash)
+      end
+    end
+
     # DYNAMIC METHODS FOR ASSOCIATIONS
 
     def associations_hash

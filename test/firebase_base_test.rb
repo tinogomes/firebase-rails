@@ -139,4 +139,17 @@ class FirebaseBaseTest < ActiveSupport::TestCase
     assert_equal stock.transactions.count, 2
     assert_equal stock.transactions.last, transaction_2.id
   end
+
+  def test_find_or_create_by_when_object_exists
+    hash = {symbol: "AAA"}
+    stock = FirebaseStock.create(hash)
+    found_stock = FirebaseStock.find_or_create_by(hash)
+    assert_equal stock.id, found_stock.id
+  end
+
+  def test_find_or_create_by_when_object_does_not_exists
+    current_stock_count = FirebaseStock.all.count
+    FirebaseStock.find_or_create_by({symbol: "ABC"})
+    assert_equal current_stock_count + 1, FirebaseStock.all.count
+  end
 end
